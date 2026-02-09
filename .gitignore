@@ -1,3 +1,6 @@
 venv/
 data/
 claude.md
+package/
+lambda_deployment.zip
+lambda_output.json
