@@ -1,16 +1,24 @@
+"""
+Date: 02/10/2026
+Author: Connor Dailey
+
+load.py - Local load script for stock market data.
+
+Reads cleaned CSV files from the data/ directory and inserts
+them into a local PostgreSQL database. Uses a composite primary
+key (ticker_name, stock_date) to prevent duplicate entries.
+"""
+
 import psycopg2
 import pandas as pd
 
-#PGSQL connection parameters
-conn = psycopg2.connect(dbname="stock_data", user="condailey",host="localhost")
-
-# Create a cursor object to interact with the database
+# Connect to local PostgreSQL
+conn = psycopg2.connect(dbname="stock_data", user="condailey", host="localhost")
 cur = conn.cursor()
 
-# List of tickers to load data for
 tickers = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA']
 
-# Load data from CSV files and insert into the database
+# Load each ticker's CSV and insert into the database
 for ticker in tickers:
     df = pd.read_csv(f'data/{ticker}_raw_data.csv')
     for index, row in df.iterrows():
@@ -20,7 +28,7 @@ for ticker in tickers:
             ON CONFLICT (ticker_name, stock_date) DO NOTHING;
         """, (ticker, row['Date'], row['Open'], row['High'], row['Low'], row['Close'], row['Volume']))
 
-# Commit the transaction and close the connection
+# Commit all inserts and close the connection
 conn.commit()
 cur.close()
 conn.close()
