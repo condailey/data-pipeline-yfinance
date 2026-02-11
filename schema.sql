@@ -1,4 +1,12 @@
-/* SQL schema for stock data */
+/*
+   Date: 02/10/2026
+   Author: Connor Dailey
+
+   schema.sql - PostgreSQL table definition for stock market data.
+
+   Composite primary key (ticker_name, stock_date) ensures
+   one record per ticker per trading day and prevents duplicates.
+*/
 
 CREATE TABLE stock_data (
     ticker_name VARCHAR,
